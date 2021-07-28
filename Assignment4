@@ -1,1 +1,8 @@
-start
+int main() {
+}
+int safe() {
+}
+int requestResource() {
+}
+int readFile() {
+}
