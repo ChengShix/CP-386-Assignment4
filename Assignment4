@@ -1,8 +1,88 @@
-int main() {
+typedef struct bank {
+    int** max;
+    int** alloc;
+    int** need;
+    int types;
+    int customers;
+    int avail[];
+} Bank;
+
+int main(int argc, char const *argv[]) {
+    if (argc < 2) {
+        printf("Input args missing\n");
+        return -1;
+    }
+
+    const char fileName[] = "sample4_in.txt";
+    Bank *bank = malloc(sizeof(Bank));
+    int customer_n = readFile(fileName, &bank);
+    bank->types = argc-1;
+    bank->customers = customer_n;
+    for (int i=0; i<argc-1; i++) {
+        bank->avail[i] = atoi(argv[i+1]);
+    }
 }
 int safe() {
 }
 int requestResource() {
 }
-int readFile() {
+int readFile(const char *fileName, Bank **bank) {
+    FILE *in = fopen(fileName, "r");
+    if (!in){
+        printf("Error in opening file\n");
+        return -1;
+    }
+
+    struct stat st;
+	fstat(fileno(in), &st);
+	char *fileContent = (char*) malloc(((int) st.st_size + 1) * sizeof(char));
+	fileContent[0] = '\0';
+	while (!feof(in)) {
+		char line[100];
+		if (fgets(line, 100, in) != NULL) {
+			strncat(fileContent, line, strlen(line));
+		}
+	}
+	fclose(in);
+
+    char *command = NULL;
+	int customerCount = 0;
+	char *fileCopy = (char*) malloc((strlen(fileContent) + 1) * sizeof(char));
+	strcpy(fileCopy, fileContent);
+	command = strtok(fileCopy, "\r\n");
+	while (command != NULL) {
+		customerCount++;
+		command = strtok(NULL, "\r\n");
+	}
+	(*bank)->max = calloc(customerCount,sizeof(int *));
+    (*bank)->alloc = calloc(customerCount,sizeof(int *));
+    (*bank)->need = calloc(customerCount,sizeof(int *));
+    for (int i=0; i<customerCount; i++) {
+        (*bank)->max[i] = calloc((*bank)->types,sizeof(int));
+        (*bank)->alloc[i] = calloc((*bank)->types,sizeof(int));
+        (*bank)->need[i] = calloc((*bank)->types,sizeof(int));
+    }
+
+    char *lines[customerCount];
+	command = NULL;
+	int i = 0;
+	command = strtok(fileContent, "\r\n");
+	while (command != NULL) {
+		lines[i] = malloc(sizeof(command) * sizeof(char));
+		strcpy(lines[i], command);
+		i++;
+		command = strtok(NULL, "\r\n");
+	}
+
+    for (int k = 0; k < customerCount; k++) {
+		char *token = NULL;
+		int j = 0;
+		token = strtok(lines[k], ",");
+		while (token != NULL) {
+			(*bank)->max[k][j] = atoi(token);
+            j++;
+			token = strtok(NULL, ",");
+		}
+	}
+	return customerCount;
 }
