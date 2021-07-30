@@ -22,9 +22,51 @@ int main(int argc, char const *argv[]) {
         bank->avail[i] = atoi(argv[i+1]);
     }
 }
-int safe() {
+int * safe(Bank *bank) {
+    int work[bank->types];
+    int finish[bank->customers];
+    int *seq = malloc(bank->customers);
+    int o=0;
+    for (int i=0; i<bank->types; i++) {
+        work[i] = bank->avail[i];
+    }
+    for (int i=0; i<bank->customers; i++) {
+        for (int j=0; j<bank->types;j++) {
+            if (finish[i] != 0 && bank->need[i][j]<=work[j]) {
+                work[j] += bank->alloc[i][j];
+                finish[i] = 0;
+                seq[o] = i;
+                o++;
+            }
+        }
+    }
+    for (int i=0; i<bank->customers; i++) {
+        if (finish[i] != 0) {
+            return NULL;
+        }
+    }
+    return seq;
 }
-int requestResource() {
+
+int requestResource(int Customer, int resource[], Bank *bank) {
+    if (safe(bank) == NULL) {
+        return -1;
+    }
+    for (int i=0; i<bank->types; i++) {
+        if (resource[i] <= bank->need[Customer][i]) {
+            if (resource[i] <= bank->avail[i]) {
+                bank->avail[i] -= resource[i];
+                bank->alloc[Customer][i] += resource[i];
+                bank->need[Customer][i] -= resource[i];
+            }else{
+                printf("Wait\n");
+                return -1;
+            }
+        }else{
+            return -1;
+        }
+    }
+    return 0;
 }
 int readFile(const char *fileName, Bank **bank) {
     FILE *in = fopen(fileName, "r");
