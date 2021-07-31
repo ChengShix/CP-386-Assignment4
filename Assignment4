@@ -189,6 +189,7 @@ int readFile(const char *fileName, Bank **bank) {
 		token = strtok(lines[k], ",");
 		while (token != NULL) {
 			(*bank)->max[k][j] = atoi(token);
+	    (*bank)->need[k][j] = atol(token);
             j++;
 			token = strtok(NULL, ",");
 		}
