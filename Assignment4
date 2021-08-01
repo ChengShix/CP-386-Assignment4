@@ -38,6 +38,98 @@ int main(int argc, char const *argv[]) {
     for (int i=0; i<argc-1; i++) {
         bank->avail[i] = atoi(argv[i+1]);
     }
+    printf("Number of Customers: %d\n", customer_n);
+    printf("Currently Available resources:");
+    for (int i=0; i<bank->types; i++) {
+        printf("%d ", bank->avail[i]);
+    }printf("\n");
+    printf("Maximum resources from file: \n");
+    for (int i=0; i<customer_n;i++){
+        printf("%d,%d,%d,%d\n", bank->max[i][0], bank->max[i][1], bank->max[i][2], bank->max[i][3]);
+    }
+
+    while (1){
+        char buffer[50],buffer2[50];
+        char a,b;
+        printf("Enter Command: ");
+        fgets(buffer,50,stdin);
+		if (sscanf(buffer,"%c%c%[^\r\n]", &a, &b, buffer2)) {
+			char *token;
+			int r[bank->types];
+			int c;
+			int x=0;
+			token = strtok(buffer2," ");
+			while (token!=NULL) {
+				if (x == 0) {
+					c = atoi(token);
+				}
+				r[x-1] = atoi(token);
+				x++;
+				token = strtok(NULL, " ");
+			}
+			if (isalpha(a) && isalpha(b)) {
+				if (a == 'R') {
+					if (b == 'Q') {
+						int k = requestResource(c,r,bank);
+						if (k == 0) {
+							printf("State is safe, and Request is satisfied\n");
+						}else{
+							printf("Request deny\n");
+						}
+					}else if (b == 'L') {
+						printf("Released\n");
+						releaseResource(c,r,bank);
+					}else if (b == 'u' && buffer2[0] == 'n') {
+						int * seq = safe(bank);
+						if (seq == NULL) {
+							printf("Not safe\n");
+						}else{
+							printf("Safe Sequence is: <");
+							for (int i = 0; i< bank->customers; i++) {
+								printf("%d ", seq[i]);
+							}
+							printf("\b>\n");
+							for (int i = 0; i< bank->customers; i++) {
+								threadRun(bank,seq[i]);
+							}
+						}
+					}
+				}else if (a== 'S' && b == 't' && buffer2[0] == 'a' && buffer2[1] == 't' && buffer2[2] == 'u' && buffer2[3] == 's') {
+					printf("Available:\n");
+					for (int i=0; i<bank->types;i++) {
+						printf("%d ", bank->avail[i]);
+					}
+					printf("\nMax:\n");
+					for (int i=0; i<customer_n;i++) {
+						printf("Customer:%d ", i);
+						for (int j=0; j<bank->types;j++) {
+							printf("%d ", bank->max[i][j]);
+						} printf("\n");
+					}
+					printf("\nAllocation:\n");
+					for (int i=0; i<customer_n;i++) {
+						printf("Customer:%d ", i);
+						for (int j=0; j<bank->types;j++) {
+							printf("%d ", bank->alloc[i][j]);
+						} printf("\n");
+					}
+					printf("\nNeed:\n");
+					for (int i=0; i<customer_n;i++) {
+						printf("Customer:%d ", i);
+						for (int j=0; j<bank->types;j++) {
+							printf("%d ", bank->need[i][j]);
+						} printf("\n");
+					}
+				}else if (a == 'E' && b == 'x' && buffer2[0] == 'i' && buffer2[0] == 't'){
+					return 0;
+				}else{
+					printf("Invalid input\n");
+				}
+			}
+        }
+    }
+
+    return 0;
 }
 void threadRun(Bank *bank, int customer){
     printf("--> Customer/Thread %d\n", customer);
