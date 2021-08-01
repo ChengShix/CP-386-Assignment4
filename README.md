@@ -8,7 +8,7 @@
 * Cheng Shi - safe，releaseResource，requestResource，checkLessVetor，threadRun
 * Minhao Xu- Main，readfile，test, debugging
 # Screenshots:
-
+![Screenshots](https://user-images.githubusercontent.com/87878778/127756040-4a559bcb-0e9d-4db8-8f57-7b3445345d11.png)
 # Feature:
 * Safe check avoid deadlock
 # Tests cases:
