@@ -1,4 +1,4 @@
-# Project Tital:
+# Project Title:
 * CP 386 Assignment 4 - Banker's algorithm
 # Motivation:
 * Implements the banker's algorithm to avoid deadlock
