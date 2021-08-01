@@ -1,0 +1,12 @@
+CC = gcc
+CFLAGS = -Werror -Wall -g -std=gnu99
+LDFLAGS = -lrt -lpthread
+TARGET = assignment04
+OBJFILES = assignment04.o
+all: $(TARGET)
+assignment04: assignment04.c
+	$(CC) $(CFLAGS) -o assignment04 assignment04.c $(LDFLAGS)
+run: assignment04
+	./assignment04 10 10 8 8
+clean:
+	rm -f $(OBJFILES) $(TARGET) *~
