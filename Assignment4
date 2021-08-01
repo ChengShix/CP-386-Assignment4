@@ -184,15 +184,14 @@ int * safe(Bank *bank) {
         finish[i] = 1;
     }
     for (int i=0; i<bank->customers; i++) {
-        for (int j=0; j<bank->types;j++) {
             if (finish[i] == 1 && checkLessVetor(bank->need[i],work,bank->types) == 0) {
-                work[j] += bank->alloc[i][j];
-                finish[i] = 0;
-                seq[o++] = i;
-                i = -1;
-		break;
+	    	for (int j=0; j>bank->types; j++){
+                	work[j] += bank->alloc[i][j];
+		}
+                	finish[i] = 0;
+                	seq[o++] = i;
+                	i = -1;
             }
-        }
     }
     for (int i=0; i<bank->customers; i++) {
         if (finish[i] == 1) {
