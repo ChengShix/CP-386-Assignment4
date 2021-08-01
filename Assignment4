@@ -18,6 +18,12 @@ typedef struct bank {
     int avail[];
 } Bank;
 
+int readFile(const char *fileName,Bank **bank);
+int requestResource(int Customer, int resource[], Bank *bank);
+int releaseResource(int Customer, int resource[], Bank *bank);
+void threadRun();
+int * safe(Bank *bank);
+
 int main(int argc, char const *argv[]) {
     if (argc < 2) {
         printf("Input args missing\n");
